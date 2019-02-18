@@ -149,13 +149,16 @@ if __name__ == '__main__':
 
     from ggplot import * 
 
-    a = ggplot(mainlog, aes(x='Algorithm', y='Average')) + geom_boxplot()
-    m = ggplot(mainlog, aes(x='Algorithm', y='Minimum')) + geom_boxplot()
-    M = ggplot(mainlog, aes(x='Algorithm', y='Maximum')) + geom_boxplot()
+    a = ggplot(mainlog, aes(x='Algorithm', 
+                            y='Average')) + geom_boxplot()
+    m = ggplot(mainlog, aes(x='Algorithm', 
+                            y='Minimum')) + geom_boxplot()
+    M = ggplot(mainlog, aes(x='Algorithm', 
+                            y='Maximum')) + geom_boxplot()
 
-    # a.show()
-    # m.show()
-    # M.show()
+    a.show()
+    m.show()
+    M.show()
 
     sns.lineplot(x="id", y="Average",
                  data=mainlog)
