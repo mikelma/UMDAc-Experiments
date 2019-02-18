@@ -12,7 +12,7 @@ from keras.layers import Input, Dense
 from UMDAc.UMDAc import UMDAc
 from UMDAc.Wrappers.Gym import Gym
 
-from UMDAc.Complexity import Complexity
+from Complexity import Complexity
 
 ## Initialize model
 a = Input(shape=(8,))
@@ -30,25 +30,45 @@ ENV_NAME = 'LunarLander-v2'
 
 REPETITIONS = 10
 
-GENERATIONS = 3
-GEN_SIZE = 20
+GENERATIONS = 3*n
+GEN_SIZE = 6*n
 SURV = .5
 RAND_SURV = .3 
 
 NOISE = None 
 
 MAX_STEPS = 400
-ITERATIONS = 1
+ITERATIONS = 3
 
 MAIN_DIR = 'results'
 DB_DIR = 'db'
+#######################
+
+## Print info 
+print('')
+print('-'*4, ' PARAMETERS ', '-'*4)
+print('Algorithm: ', ALGORITHM)
+print('Environment: ', ENV_NAME)
+print('Repetitions: ', REPETITIONS)
+print('Complexity: ', n)
+print('')
+print('Generations: ', GENERATIONS)
+print('Population size: ', GEN_SIZE)
+print('')
+print('Max steps: ', MAX_STEPS)
+print('Iterations: ', ITERATIONS)
+print('')
+
+if input('Run experiment? [y/N]') != 'y':
+    ## Quit
+    print('')
+    print('Nothing to do, quitting...')
+    quit()
 
 MAIN_FIELDS = ['id', 'Algorithm', 'Environment',
               'Repetitions', 'Repetition_id', 'Average',
               'Median', 'Maximum', 'Minimum']
 DB_FIELDS = ['Generation', 'Average', 'Median', 'Maximum', 'Minimum']
-
-#######################
 
 ## Move working directory
 os.chdir(MAIN_DIR)
