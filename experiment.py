@@ -15,10 +15,19 @@ from UMDAc.Wrappers.Gym import Gym
 from Complexity import Complexity
 
 ## Initialize model
+'''
 a = Input(shape=(8,))
 b = Dense(4, activation='softmax')(a)
 
 model = Model(inputs=a, outputs=b)
+'''
+
+a = Input(shape=(4,))
+b = Dense(2, activation='elu')(a)
+
+model = Model(inputs=a, outputs=b)
+
+## Model info
 model.summary()
 
 ## Define model's complexity
@@ -26,18 +35,20 @@ n = Complexity(model)
 
 ### HYPERPARAMETERS ###
 ALGORITHM = 'UMDAc'
-ENV_NAME = 'LunarLander-v2'
+
+ENV_NAME = 'CartPole-v0'
+# ENV_NAME = 'LunarLander-v2'
 
 REPETITIONS = 10
 
-GENERATIONS = 3*n
+GENERATIONS = 2*n
 GEN_SIZE = 6*n
+
 SURV = .5
 RAND_SURV = .3 
-
 NOISE = None 
 
-MAX_STEPS = 400
+MAX_STEPS = 200
 ITERATIONS = 3
 
 MAIN_DIR = 'results'
@@ -65,9 +76,12 @@ if input('Run experiment? [y/N]') != 'y':
     print('Nothing to do, quitting...')
     quit()
 
-MAIN_FIELDS = ['id', 'Algorithm', 'Environment',
-              'Repetitions', 'Repetition_id', 'Average',
-              'Median', 'Maximum', 'Minimum']
+MAIN_FIELDS = ['id', 'Algorithm', 'Environment', 
+             'Repetitions','Repetition_id',
+             'Population', 'Generations', 
+             'Survivors', 'Random survivors', 'n', 'Noise',
+             'Average','Median', 'Maximum', 'Minimum']
+
 DB_FIELDS = ['Generation', 'Average', 'Median', 'Maximum', 'Minimum']
 
 ## Move working directory
@@ -150,6 +164,12 @@ for repetiton_id in range(REPETITIONS):
                     'Environment':ENV_NAME,
                     'Repetitions':REPETITIONS,
                     'Repetition_id':repetiton_id,
+                    'Generations':GENERATIONS,
+                    'Population':GEN_SIZE,
+                    'Survivors':SURV,
+                    'Random survivors':RAND_SURV,
+                    'n':n,
+                    'Noise':Noise,
                     'Average':last_avg,
                     'Median':last_median,
                     'Maximum':last_max,

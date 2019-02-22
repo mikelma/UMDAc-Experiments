@@ -45,7 +45,9 @@ class DBMan():
         main = open('main.csv', 'w')
 
         fieldnames = ['id', 'Algorithm', 'Environment', 
-                     'Repetitions','Repetition_id', 
+                     'Repetitions','Repetition_id',
+                     'Population', 'Generations', 
+                     'Survivors', 'Random survivors', 'n', 'Noise',
                      'Average','Median', 'Maximum', 'Minimum']
 
         writer = csv.DictWriter(main, fieldnames=fieldnames)
