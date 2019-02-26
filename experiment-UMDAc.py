@@ -30,7 +30,6 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'UMDAc'
 
-# ENV_NAME = 'CartPole-v0'
 ENV_NAME = 'LunarLanderContinuous-v2'
 
 REPETITIONS = 10
