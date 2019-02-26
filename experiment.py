@@ -46,7 +46,7 @@ NOISE = .0
 MAX_STEPS = 200
 ITERATIONS = 3
 
-MAIN_DIR = 'test_results'
+MAIN_DIR = 'results'
 DB_DIR = 'db'
 #######################
 
