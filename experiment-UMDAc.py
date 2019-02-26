@@ -43,7 +43,7 @@ SURV = .5
 RAND_SURV = .3 
 NOISE = .0 
 
-MAX_STEPS = 200
+MAX_STEPS = 400
 ITERATIONS = 3
 
 MAIN_DIR = 'results'
