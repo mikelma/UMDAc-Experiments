@@ -145,24 +145,36 @@ if __name__ == '__main__':
 
     dbman = DBMan()
 
-    sns.set_style('darkgrid')
+    data = dbman.get_db(input('Enter ID of the experiment >'))
+
+    data_max = data['Maximum'].values.tolist()
+    data_min = data['Minimum'].values.tolist()
+    data_avg = data['Average'].values.tolist()
+
+    x = list(range(len(data_max)))
+
+    plt.plot(x, data_avg, label='Average')
+    plt.plot(x, data_max, label='Maximum')
+    plt.plot(x, data_min, label='Minimum')
+    plt.legend()
+
+    plt.show()
+
+    quit()
+
+    ##########################
 
     mainlog = dbman.get_main()
 
-    from ggplot import * 
+    # m = mainlog.loc[mainlog['Environment']=='CartPole-v0']
+    # m = mainlog.loc[mainlog['Environment']=='LunarLander-v2']
+    m = mainlog.loc[mainlog['Environment']=='LunarLanderContinuous-v2']
+    
+    # print(m)
 
-    a = ggplot(mainlog, aes(x='Algorithm', 
-                            y='Average')) + geom_boxplot()
-    m = ggplot(mainlog, aes(x='Algorithm', 
-                            y='Minimum')) + geom_boxplot()
-    M = ggplot(mainlog, aes(x='Algorithm', 
-                            y='Maximum')) + geom_boxplot()
+    sns.boxplot(x='Environment', y='Maximum', data=m) 
+    # sns.boxplot(x='Environment', y='Average', data=m) 
+    # sns.boxplot(x='Environment', y='Minimum', data=m) 
 
-    a.show()
-    m.show()
-    M.show()
-
-    sns.lineplot(x="id", y="Average",
-                 data=mainlog)
     plt.show()
 

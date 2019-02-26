@@ -15,17 +15,18 @@ from UMDAc.Wrappers.Gym import Gym
 from Complexity import Complexity
 
 ## Initialize model
-'''
+
 a = Input(shape=(8,))
-b = Dense(4, activation='softmax')(a)
+b = Dense(4, activation='tanh')(a)
 
 model = Model(inputs=a, outputs=b)
-'''
 
+'''
 a = Input(shape=(4,))
 b = Dense(2, activation='elu')(a)
 
 model = Model(inputs=a, outputs=b)
+'''
 
 ## Model info
 model.summary()
@@ -36,17 +37,18 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'UMDAc'
 
-ENV_NAME = 'CartPole-v0'
-# ENV_NAME = 'LunarLander-v2'
+# ENV_NAME = 'CartPole-v0'
+ENV_NAME = 'LunarLanderContinuous-v2'
 
 REPETITIONS = 10
+ACTION_MODE = 'raw'
 
 GENERATIONS = 2*n
 GEN_SIZE = 6*n
 
 SURV = .5
 RAND_SURV = .3 
-NOISE = None 
+NOISE = .0 
 
 MAX_STEPS = 200
 ITERATIONS = 3
@@ -108,7 +110,8 @@ for repetiton_id in range(REPETITIONS):
     ## Initialize Gym problem 
     problem = Gym(ENV_NAME,
                   iterations=ITERATIONS,
-                  max_steps=MAX_STEPS)
+                  max_steps=MAX_STEPS,
+                  action_mode=ACTION_MODE)
 
     ## Initialize UMDAc
     umdac = UMDAc(model,
@@ -122,6 +125,7 @@ for repetiton_id in range(REPETITIONS):
     dbwriter.writeheader()
 
     print('Repetition: ', repetiton_id)
+    print('id: ', ID)
 
     ### TRAINING ###
     for generation in tqdm(range(GENERATIONS)):
