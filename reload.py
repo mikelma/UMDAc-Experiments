@@ -7,7 +7,6 @@ FORMAT = '.h5'
 MAX_STEPS = None
 
 ## Change working directory
-# os.chdir('results/db')
 os.chdir('results/db')
 
 ## List files
