@@ -21,13 +21,6 @@ b = Dense(4, activation='tanh')(a)
 
 model = Model(inputs=a, outputs=b)
 
-'''
-a = Input(shape=(4,))
-b = Dense(2, activation='elu')(a)
-
-model = Model(inputs=a, outputs=b)
-'''
-
 ## Model info
 model.summary()
 
@@ -43,7 +36,7 @@ ENV_NAME = 'LunarLanderContinuous-v2'
 REPETITIONS = 10
 ACTION_MODE = 'raw'
 
-GENERATIONS = 2*n
+GENERATIONS = 3*n
 GEN_SIZE = 6*n
 
 SURV = .5
@@ -53,7 +46,7 @@ NOISE = .0
 MAX_STEPS = 200
 ITERATIONS = 3
 
-MAIN_DIR = 'results'
+MAIN_DIR = 'test_results'
 DB_DIR = 'db'
 #######################
 
@@ -72,11 +65,11 @@ print('Max steps: ', MAX_STEPS)
 print('Iterations: ', ITERATIONS)
 print('')
 
-if input('Run experiment? [y/N]') != 'y':
-    ## Quit
-    print('')
-    print('Nothing to do, quitting...')
-    quit()
+# if input('Run experiment? [y/N]') != 'y':
+#     ## Quit
+#     print('')
+#     print('Nothing to do, quitting...')
+#     quit()
 
 MAIN_FIELDS = ['id', 'Algorithm', 'Environment', 
              'Repetitions','Repetition_id',
