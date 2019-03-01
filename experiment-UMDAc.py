@@ -17,7 +17,7 @@ from Complexity import Complexity
 ## Initialize model
 
 a = Input(shape=(8,))
-b = Dense(4, activation='tanh')(a)
+b = Dense(4, activation='elu')(a)
 
 model = Model(inputs=a, outputs=b)
 
@@ -30,10 +30,10 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'UMDAc'
 
-ENV_NAME = 'LunarLanderContinuous-v2'
+ENV_NAME = 'LunarLander-v2'
 
 REPETITIONS = 10
-ACTION_MODE = 'raw'
+ACTION_MODE = 'argmax'
 
 GENERATIONS = 3*n
 GEN_SIZE = 6*n
