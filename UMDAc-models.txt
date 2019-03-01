@@ -12,7 +12,7 @@ model = Model(inputs=a, outputs=b)
 =====================================
 
 --------------------------------------
-* LunarLander-v0
+* LunarLander-v2
 --------------------------------------
 
 a = Input(shape=(8,))
@@ -24,7 +24,7 @@ model = Model(inputs=a, outputs=b)
 =====================================
 
 --------------------------------------
-* LunarLanderContinuous-v0
+* LunarLanderContinuous-v2
 --------------------------------------
 
 a = Input(shape=(8,))
