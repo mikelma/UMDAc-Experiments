@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 class DBMan():
 
@@ -20,18 +21,48 @@ class DBMan():
 
         self.MAIN_DIR = main_dir 
         self.DB_DIR = db_dir
+
+        def _chdir_main(main_dir):
+            ## Move working directory to main dir
+            print('[*] Changing working directory to ', main_dir)
+            os.chdir(main_dir)
     
         ## Check for arguments
         import sys
         args = sys.argv[1:]
 
-        if len(args) > 0 and (args[0] == '--wizard' or args[0] == '-w'):
-            self.wizard()
-            quit()
+        if len(args) > 0:
 
-        ## Move working directory to main dir
-        print('[*] Changing working directory to ', main_dir)
-        os.chdir(main_dir)
+            if args[0] == '--builder' or args[0] == '-w':
+                self.builder()
+                quit()
+
+            elif args[0] == '--evaluate':
+                _chdir_main(main_dir)
+                
+                ids = args[1].split(',')
+                ids = list(map(int, ids))
+
+                self.evaluate(ids)
+                quit()
+
+            elif args[0] == '--plot':
+                _chdir_main(main_dir)
+                ID = int(args[1].split(',')[0])
+                self.plot_db(ID)
+                quit()
+
+            elif args[0] == '-h' or args[0] == '--help':
+                print('''Welcome to dbman's help page''', '\n')
+                print('Examples of use:')
+                print('  python dbman.py [args] [options]', '\n')
+                print('-w, --builder             Wizard to help with db filesystem')
+                print('--evaluate id0, id1...   Evaluate specified id experiments')
+                print('--plot id                Plot graph of a certain experiment. Requires specifying id number.')
+                print('-h                       Show this help page')
+                quit()
+
+        _chdir_main(main_dir)
         
         ## Check for main log file
         if 'main.csv' in glob.glob('*.csv'):
@@ -73,20 +104,40 @@ class DBMan():
 
         return f 
 
-    def wizard(self):
+    def plot_db(self, ID):
+
+        sns.set_style('darkgrid')
+
+        data = self.get_db(ID)
+
+        data_max = data['Maximum'].values.tolist()
+        data_min = data['Minimum'].values.tolist()
+        data_avg = data['Average'].values.tolist()
+
+        x = list(range(len(data_max)))
+
+        plt.plot(x, data_avg, label='Average')
+        plt.plot(x, data_max, label='Maximum')
+        plt.plot(x, data_min, label='Minimum')
+        plt.legend()
+
+        plt.show()
+
+    def builder(self):
 
         ## Clean terminal
         print('\033c')
-        print('Welcome to dbman wizard!')
+        print('Welcome to dbman builder!')
         print('')
         print('-'*4, ' Options ', '-'*4)
         print('[1] Reset db and main logger')
         print('[2] Create db file system')
+        print('[3] Create or reset evaluation db')
         print('[0] Exit')
         print('')
 
-        s = 99
-        while s not in range(3):
+        s = None
+        while s not in range(4):
             s = int(input('Select a given option >'))
          
         print('')
@@ -138,6 +189,118 @@ class DBMan():
                 print('Nothing to do, quitting...')
                 quit()
 
+        elif s == 3:
+            
+            _chdir_main(main_dir)            
+            # Build eval db
+            evalog = open('evaluation.csv', 'w')
+
+            evalfields = ['id', 'Average',
+                          'Median', 'Maximum', 'Minimum']
+
+            writer = csv.DictWriter(evalog, fieldnames=evalfields)
+
+            writer.writeheader()
+
+            evalog.close()
+
+            print('[*] Evaluation log file created. So fresh!')
+
+
+    def evaluate(self, ids):
+
+        from tqdm import tqdm
+        from UMDAc.UMDAc import UMDAc
+        from UMDAc.Wrappers.Gym import Gym
+
+
+        max_steps = input('Maximum step number [None]:')
+        if max_steps == '':
+            max_steps = None
+
+        else:
+            max_steps = int(max_steps)
+        
+        action_mode = None
+        while action_mode not in range(2): 
+            action_mode = input('action mode [0:raw/1:argmax]:')
+            action_mode = int(action_mode)
+
+        if action_mode == 0:
+            action_mode = 'raw'
+        elif action_mode == 1:
+            action_mode = 'argmax'
+
+        repetitions = input('Repetitions [100]:')
+        if repetitions == '':
+            repetitions = 100
+        else:
+            repetitions = int(repetitions)
+
+        print('')
+        print('--- Selected options ---')
+        print('Maximum steps: ', max_steps)
+        print('Action mode: ', action_mode)
+        print('Repetitions: ', repetitions)
+        print('')
+
+        if input('Are you sure to continue? [N/y] >') != 'y':
+            print('aborting...')
+            quit()
+
+        print('')
+
+        ## Open evaluation log
+        evalog = open('evaluation.csv', 'a')
+
+                
+        evalwriter = csv.DictWriter(evalog, 
+            fieldnames=['id','Average', 'Median', 
+                        'Maximum', 'Minimum']) 
+
+        for ID in ids:
+
+            print('Experiment: ', ID)
+
+            ## Get experiment's environment
+            mainlog = self.get_main()
+            env = mainlog.loc[mainlog['id']==ID]['Environment']
+            env = list(env)[0]
+
+            ## Init env
+            problem = Gym(env,
+                          iterations=1,
+                          max_steps=max_steps,
+                          action_mode=action_mode)
+
+            ## Init UMDAc
+            umdac = UMDAc(model=None,
+                         problem=problem,
+                         gen_size=None)
+
+            umdac.load_model('db/'+str(ID)+'.h5')
+
+            log = []
+
+            for i in tqdm(range(repetitions)):
+                ## Evaluate specimen, render enabled
+                tr = problem.evaluate(specimen=None,
+                                     model=umdac.model,
+                                     render=False,
+                                     verbose=False)
+                log.append(tr)
+
+            print('Minimum score: ', min(log)) 
+            print('Maximum score: ', max(log))
+            print('Average score: ', np.mean(log)) 
+
+            evalwriter.writerow({'id':ID,
+                                 'Average':np.mean(log),
+                                 'Median':np.median(log),
+                                 'Maximum':max(log),
+                                 'Minimum':min(log)}) 
+        evalog.close()
+
 if __name__ == '__main__':
     
     import seaborn as sns
@@ -146,6 +309,7 @@ if __name__ == '__main__':
     dbman = DBMan()
 
     data = dbman.get_db(input('Enter ID of the experiment >'))
+
 
     data_max = data['Maximum'].values.tolist()
     data_min = data['Minimum'].values.tolist()
