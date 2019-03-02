@@ -91,6 +91,9 @@ class DBMan():
     def get_main(self):
         return pd.read_csv('main.csv')
 
+    def get_eval(self):
+        return pd.read_csv('evaluation.csv')
+
     def get_db(self, db_id):
         ## Change working dir
         os.chdir(self.DB_DIR)
@@ -190,21 +193,29 @@ class DBMan():
                 quit()
 
         elif s == 3:
-            
-            _chdir_main(main_dir)            
-            # Build eval db
-            evalog = open('evaluation.csv', 'w')
+            if input('Are you sure you want to reset all db and main logger? Existing data will be  deleted! [y/N] ') == 'y':
+                ## Move working directory to main dir
+                print('[*] Changing working directory to ', self.MAIN_DIR)
+                os.chdir(self.MAIN_DIR)
 
-            evalfields = ['id', 'Average',
-                          'Median', 'Maximum', 'Minimum']
+                # Build eval db
+                evalog = open('evaluation.csv', 'w')
 
-            writer = csv.DictWriter(evalog, fieldnames=evalfields)
+                evalfields=['id','Algorithm', 
+                            'Environment', 
+                            'Total reward'] 
 
-            writer.writeheader()
+                writer = csv.DictWriter(evalog, fieldnames=evalfields)
 
-            evalog.close()
+                writer.writeheader()
 
-            print('[*] Evaluation log file created. So fresh!')
+                evalog.close()
+
+                print('[*] Evaluation log file created. So fresh!')
+
+            else:
+                print('Nothing to do. Quitting...')
+                quit()
 
 
     def evaluate(self, ids):
@@ -212,7 +223,7 @@ class DBMan():
         from tqdm import tqdm
         from UMDAc.UMDAc import UMDAc
         from UMDAc.Wrappers.Gym import Gym
-
+        from GA.GA import GA
 
         max_steps = input('Maximum step number [None]:')
         if max_steps == '':
@@ -255,8 +266,9 @@ class DBMan():
 
                 
         evalwriter = csv.DictWriter(evalog, 
-            fieldnames=['id','Average', 'Median', 
-                        'Maximum', 'Minimum']) 
+            fieldnames=['id','Algorithm', 
+                        'Environment', 
+                        'Total reward']) 
 
         for ID in ids:
 
@@ -267,38 +279,45 @@ class DBMan():
             env = mainlog.loc[mainlog['id']==ID]['Environment']
             env = list(env)[0]
 
+            ## Get algorithm used in experiment
+            alg = mainlog.loc[mainlog['id']==ID]['Algorithm']
+            alg = list(alg)[0]
+
             ## Init env
             problem = Gym(env,
                           iterations=1,
                           max_steps=max_steps,
                           action_mode=action_mode)
 
-            ## Init UMDAc
-            umdac = UMDAc(model=None,
-                         problem=problem,
-                         gen_size=None)
+            ## Select algorithm
+            if alg == 'UMDAc':
 
-            umdac.load_model('db/'+str(ID)+'.h5')
+                algorithm = UMDAc(model=None,
+                             problem=problem,
+                             gen_size=None)
+                
+            elif alg == 'GA':
 
-            log = []
+                algorithm = GA(model=None,
+                             problem=problem,
+                             gen_size=None)
+            else:
+                print('Error, invalid algorithm name, name found:', alg) 
+                quit()
+
+            algorithm.load_model('db/'+str(ID)+'.h5')
 
             for i in tqdm(range(repetitions)):
                 ## Evaluate specimen, render enabled
                 tr = problem.evaluate(specimen=None,
-                                     model=umdac.model,
+                                     model=algorithm.model,
                                      render=False,
                                      verbose=False)
-                log.append(tr)
 
-            print('Minimum score: ', min(log)) 
-            print('Maximum score: ', max(log))
-            print('Average score: ', np.mean(log)) 
-
-            evalwriter.writerow({'id':ID,
-                                 'Average':np.mean(log),
-                                 'Median':np.median(log),
-                                 'Maximum':max(log),
-                                 'Minimum':min(log)}) 
+                evalwriter.writerow({'id':ID,
+                                     'Algorithm':alg,
+                                     'Environment':env,
+                                     'Total reward':tr})
         evalog.close()
 
 if __name__ == '__main__':
@@ -308,8 +327,19 @@ if __name__ == '__main__':
 
     dbman = DBMan()
 
+    data = dbman.get_eval()
+
+    sns.boxplot(x='id', y='Total reward', data=data) 
+    plt.show()
+
+    sns.boxplot(y='Total reward', hue='Environment', data=data) 
+    plt.show()
+
+    quit()
+
     data = dbman.get_db(input('Enter ID of the experiment >'))
 
+    ##########################
 
     data_max = data['Maximum'].values.tolist()
     data_min = data['Minimum'].values.tolist()
