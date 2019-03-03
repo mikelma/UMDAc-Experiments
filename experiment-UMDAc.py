@@ -16,8 +16,8 @@ from Complexity import Complexity
 
 ## Initialize model
 
-a = Input(shape=(8,))
-b = Dense(4, activation='elu')(a)
+a = Input(shape=(4,))
+b = Dense(2, activation='elu')(a)
 
 model = Model(inputs=a, outputs=b)
 
@@ -30,7 +30,7 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'UMDAc'
 
-ENV_NAME = 'LunarLander-v2'
+ENV_NAME = 'CartPole-v0'
 
 REPETITIONS = 10
 ACTION_MODE = 'argmax'
@@ -42,7 +42,7 @@ SURV = .5
 RAND_SURV = .0 
 NOISE = .0 
 
-MAX_STEPS = 400
+MAX_STEPS = 200
 ITERATIONS = 3
 
 MAIN_DIR = 'results'
