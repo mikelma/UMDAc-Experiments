@@ -193,7 +193,7 @@ class DBMan():
                 quit()
 
         elif s == 3:
-            if input('Are you sure you want to reset all db and main logger? Existing data will be  deleted! [y/N] ') == 'y':
+            if input('Are you sure you want to reset the evaluation log? Existing data will be deleted! [y/N] ') == 'y':
                 ## Move working directory to main dir
                 print('[*] Changing working directory to ', self.MAIN_DIR)
                 os.chdir(self.MAIN_DIR)
