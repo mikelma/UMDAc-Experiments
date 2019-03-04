@@ -1,0 +1,52 @@
+Log of model architectures used in this experiments. Classified by environment:
+
+--------------------------------------
+* CartPole-v0:
+--------------------------------------
+
+a = Input(shape=(4,))
+b = Dense(2, activation='elu')(a)
+
+model = Model(inputs=a, outputs=b)
+
+=====================================
+
+--------------------------------------
+* LunarLander-v2
+--------------------------------------
+
+a = Input(shape=(8,))
+b = Dense(4, activation='elu')(a)
+
+model = Model(inputs=a, outputs=b)
+
+=====================================
+
+--------------------------------------
+* LunarLanderContinuous-v2
+--------------------------------------
+
+a = Input(shape=(8,))
+b = Dense(4, activation='tanh')(a)
+
+model = Model(inputs=a, outputs=b)
+
+### HYPERPARAMETERS ###
+ALGORITHM = 'GA'
+
+ENV_NAME = 'LunarLanderContinuous-v2'
+
+REPETITIONS = 10
+ACTION_MODE = 'raw'
+
+GENERATIONS = 3*n
+GEN_SIZE = 6*n
+
+SURV = .5
+RAND_SURV = .0 
+NOISE = .1 
+
+MAX_STEPS = 400
+ITERATIONS = 3
+=====================================
+

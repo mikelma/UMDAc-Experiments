@@ -14,15 +14,8 @@ from GA.Wrappers.Gym import Gym
 from Complexity import Complexity
 
 ## Initialize model
-'''
 a = Input(shape=(8,))
 b = Dense(4, activation='tanh')(a)
-
-model = Model(inputs=a, outputs=b)
-'''
-
-a = Input(shape=(4,))
-b = Dense(2, activation='elu')(a)
 
 model = Model(inputs=a, outputs=b)
 
@@ -35,11 +28,10 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'GA'
 
-# ENV_NAME = 'LunarLanderContinuous-v2'
-ENV_NAME = 'CartPole-v0'
+ENV_NAME = 'LunarLanderContinuous-v2'
 
 REPETITIONS = 10
-ACTION_MODE = 'argmax'
+ACTION_MODE = 'raw'
 
 GENERATIONS = 3*n
 GEN_SIZE = 6*n
@@ -48,7 +40,7 @@ SURV = .5
 RAND_SURV = .0 
 NOISE = .1 
 
-MAX_STEPS = 200
+MAX_STEPS = 400
 ITERATIONS = 3
 
 MAIN_DIR = 'results'
