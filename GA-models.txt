@@ -9,6 +9,24 @@ b = Dense(2, activation='elu')(a)
 
 model = Model(inputs=a, outputs=b)
 
+### HYPERPARAMETERS ###
+ALGORITHM = 'GA'
+
+ENV_NAME = 'CartPole-v0'
+
+REPETITIONS = 10
+ACTION_MODE = 'argmax'
+
+GENERATIONS = 3*n
+GEN_SIZE = 6*n
+
+SURV = .5
+RAND_SURV = .0 
+NOISE = .1 
+
+MAX_STEPS = 200
+ITERATIONS = 3
+
 =====================================
 
 --------------------------------------
