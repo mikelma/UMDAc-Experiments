@@ -16,8 +16,9 @@ from Complexity import Complexity
 
 ## Initialize model
 
-a = Input(shape=(4,))
-b = Dense(2, activation='elu')(a)
+a = Input(shape=(24,))
+b = Dense(8, activation='elu')(a)
+b = Dense(4, activation='tanh')(b)
 
 model = Model(inputs=a, outputs=b)
 
@@ -30,19 +31,19 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'UMDAc'
 
-ENV_NAME = 'CartPole-v0'
+ENV_NAME = 'BipedalWalker-v2'
 
-REPETITIONS = 10
-ACTION_MODE = 'argmax'
+REPETITIONS = 5
+ACTION_MODE = 'raw'
 
-GENERATIONS = 3*n
-GEN_SIZE = 6*n
+GENERATIONS = int(.5*n)
+GEN_SIZE = int(1.3*n)
 
 SURV = .5
 RAND_SURV = .0 
 NOISE = .0 
 
-MAX_STEPS = 200
+MAX_STEPS = 400
 ITERATIONS = 3
 
 MAIN_DIR = 'results'
