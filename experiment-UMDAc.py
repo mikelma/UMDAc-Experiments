@@ -17,8 +17,7 @@ from Complexity import Complexity
 ## Initialize model
 
 a = Input(shape=(24,))
-b = Dense(8, activation='elu')(a)
-b = Dense(4, activation='tanh')(b)
+b = Dense(4, activation='tanh')(a)
 
 model = Model(inputs=a, outputs=b)
 
@@ -36,8 +35,8 @@ ENV_NAME = 'BipedalWalker-v2'
 REPETITIONS = 5
 ACTION_MODE = 'raw'
 
-GENERATIONS = int(.5*n)
-GEN_SIZE = int(1.3*n)
+GENERATIONS = 2*n 
+GEN_SIZE = 3*n  
 
 SURV = .5
 RAND_SURV = .0 
