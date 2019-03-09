@@ -35,7 +35,7 @@ ENV_NAME = 'BipedalWalker-v2'
 REPETITIONS = 5
 ACTION_MODE = 'raw'
 
-GENERATIONS = 2*n 
+GENERATIONS = 1*n 
 GEN_SIZE = 3*n  
 
 SURV = .5
