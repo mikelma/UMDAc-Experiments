@@ -14,8 +14,8 @@ from GA.Wrappers.Gym import Gym
 from Complexity import Complexity
 
 ## Initialize model
-a = Input(shape=(4,))
-b = Dense(2, activation='elu')(a)
+a = Input(shape=(24,))
+b = Dense(4, activation='tanh')(a)
 
 model = Model(inputs=a, outputs=b)
 
@@ -28,21 +28,20 @@ n = Complexity(model)
 ### HYPERPARAMETERS ###
 ALGORITHM = 'GA'
 
-ENV_NAME = 'CartPole-v0'
+ENV_NAME = 'BipedalWalker-v2'
 
-REPETITIONS = 10
-ACTION_MODE = 'argmax'
+REPETITIONS = 5
+ACTION_MODE = 'raw'
 
-GENERATIONS = 3*n
-GEN_SIZE = 6*n
+GENERATIONS = 1*n 
+GEN_SIZE = 3*n  
 
 SURV = .5
 RAND_SURV = .0 
 NOISE = .1 
 
-MAX_STEPS = 200
+MAX_STEPS = 400
 ITERATIONS = 3
-
 MAIN_DIR = 'results'
 DB_DIR = 'db'
 #######################
