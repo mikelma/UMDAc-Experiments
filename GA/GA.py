@@ -117,7 +117,23 @@ class GA():
                 ## Update worst specimens' lists
                 del worsts[indx]
                 del worsts_fitness[indx]
-        
+
+        ## Calculate selection probabily of specimens
+        fitness_list = np.array(survivors_fitness)
+        # print('Fitness: ', fitness_list)
+                
+        ## Fix negative fitness values
+        fitness_list += abs(min(fitness_list))
+        # print('Fixed neg: ', fitness_list)
+
+        p = [] ## Probability list
+        s = sum(fitness_list)
+        for f in fitness_list:
+            p.append(f / s)
+
+        # print(p)
+        # quit()
+
         ## Generate new specimens (empty):
         self.new = {}
         for i in range(len(worsts)):
@@ -142,40 +158,41 @@ class GA():
                         else:
                             w.append(self.gen[name][i_l][i][j])
 
-                    if noise != None:
-                        n_mut = int(len(w)*noise)
-                        muts = np.random.rand(n_mut)
+                    # if noise != None:
+                    #     n_mut = int(len(w)*noise)
+                    #     muts = np.random.rand(n_mut)
 
-                        w = np.array(w)
-                        np.random.shuffle(w)
-                        
-                        w = np.delete(w, range(len(w)-n_mut, len(w)), 0)
+                    #     w = np.array(w)
+                    #     np.random.shuffle(w)
+                    #     
+                    #     w = np.delete(w, range(len(w)-n_mut, len(w)), 0)
 
-                        w = np.hstack((w, muts))
-                        np.random.shuffle(w)
+                    #     w = np.hstack((w, muts))
+                    #     np.random.shuffle(w)
                     
-                    #print(w)
-                    #quit()
-
-                    # i_sample = 0 ##  Iterator
+                    # print(w)
+                    # quit()
 
                     ## Generate new specimens
                     for name in self.new:
 
-                        ## Select random index 
-                        indx = np.random.randint(len(w))
-                        ## Select randomly weight from w list
-                        selection = w[indx]
-                        ## Update weight list
-                        w = np.delete(w, indx)
+                        ## Apply mutations, noise
+                        if noise != None:
 
+                            if np.random.rand() <= noise:
+                                new_w = 0 
+                                
+                            else:
+                                ## Select randomly weight from w list, with p probability distribution
+                                new_w = np.random.choice(w, p=p)
+                                                
                         ## Update weight  
                         if isbias:
                             self.new[name][
-                                i_l][j] = selection 
+                                i_l][j] = new_w 
                         else:
                             self.new[name][
-                                i_l][i][j] = selection
+                                i_l][i][j] = new_w
         
         ## After generating a set of new specimens
 
