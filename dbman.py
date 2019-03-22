@@ -79,7 +79,7 @@ class DBMan():
                      'Repetitions','Repetition_id',
                      'Population', 'Generations', 
                      'Survivors', 'Random survivors', 'n', 'Noise',
-                     'Average','Median', 'Maximum', 'Minimum']
+                     'Average', 'Median', 'Maximum', 'Minimum']
 
         writer = csv.DictWriter(main, fieldnames=fieldnames)
 
@@ -142,7 +142,7 @@ class DBMan():
         s = None
         while s not in range(4):
             s = int(input('Select a given option >'))
-         
+
         print('')
 
         if s == 0:
@@ -325,7 +325,6 @@ if __name__ == '__main__':
     import seaborn as sns
 
     # sns.set_style('darkgrid')
-    sns.set_style('whitegrid')
 
     dbman = DBMan()
 
@@ -334,18 +333,23 @@ if __name__ == '__main__':
     # data = data.loc[data['Environment']=='LunarLanderContinuous-v2']
     # data = data.loc[data['Environment']=='CartPole-v0']
 
-    sns.catplot(x = 'Environment', y ='Total reward', 
-                hue='Algorithm', kind='box', data=data) 
-    plt.show()
+    # sns.catplot(x = 'Environment', y ='Total reward', 
+    #             hue='Algorithm', kind='box', data=data) 
+    # plt.show()
 
-    sns.catplot(x = 'Environment', y ='Total reward', 
-                hue='Algorithm', split=False, 
-                kind='violin',data=data) 
+    # sns.catplot(x = 'Environment', y ='Total reward', 
+    #             hue='Algorithm', split=False, 
+    #             kind='violin',data=data) 
 
-    plt.show()
+    # plt.show()
 
-    sns.catplot(x = 'Environment', y ='Total reward', 
+    sns.set_style('whitegrid')
+    sns.set(font_scale=1.3)
+
+    g = sns.catplot(x = 'Environment', y ='Total reward', 
                 hue='Algorithm', split=True, 
                 kind='violin',data=data) 
+
+    g.set_xticklabels(rotation=10)
 
     plt.show()
